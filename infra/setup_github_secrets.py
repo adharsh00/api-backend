@@ -28,6 +28,8 @@ import os
 import json
 import base64
 
+import boto3
+import boto3.session
 import requests
 from nacl import encoding, public as nacl_public   # pynacl
 
@@ -41,8 +43,11 @@ GITHUB_OWNER = "adharsh00"
 GITHUB_REPO  = "api-backend"
 GITHUB_API   = "https://api.github.com"
 
-# ── AWS secret values (static / from output) ──────────────────────────────────
-AWS_SECRET_ACCESS_KEY = "9QymKsudkYSLvgZtID88y+sol6SEMNT2LRNo0Jmv"
+# ── Resolve AWS credentials from the environment / ~/.aws/credentials ─────────
+_session = boto3.session.Session()
+_creds   = _session.get_credentials().get_frozen_credentials()
+AWS_ACCESS_KEY_ID_VALUE     = _creds.access_key
+AWS_SECRET_ACCESS_KEY_VALUE = _creds.secret_key
 
 
 def _encrypt_secret(public_key_str: str, secret_value: str) -> str:
@@ -110,8 +115,8 @@ def main() -> None:
     secrets = {
         "EC2_HOST":              ec2_ip       or "",
         "EC2_SSH_KEY":           pem_content,
-        "AWS_ACCESS_KEY_ID":     aws_key      or "",
-        "AWS_SECRET_ACCESS_KEY": AWS_SECRET_ACCESS_KEY,
+        "AWS_ACCESS_KEY_ID":     aws_key      or AWS_ACCESS_KEY_ID_VALUE,
+        "AWS_SECRET_ACCESS_KEY": AWS_SECRET_ACCESS_KEY_VALUE,
         "S3_BUCKET_NAME":        s3_name      or "medical-image-validation",
         "SQS_QUEUE_URL":         sqs_url      or "",
     }
