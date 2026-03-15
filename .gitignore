@@ -1,0 +1,44 @@
+# ── Secrets & credentials ─────────────────────────────────────────────────────
+.env
+*.pem
+*.pem.pub
+*_accessKeys.csv
+*_credentials.csv
+login-details.txt
+details.txt
+pr.txt
+topic.txt
+agents.md
+infra/output.json
+cloud-key-pair.pem
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.eggs/
+htmlcov/
+.coverage
+
+# ── Node / Frontend ───────────────────────────────────────────────────────────
+node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db

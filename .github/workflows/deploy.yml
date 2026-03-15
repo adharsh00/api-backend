@@ -1,0 +1,69 @@
+name: Deploy API to EC2
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  # ── Step 1: run test suite ─────────────────────────────────────────────────
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install system dependency (libmagic)
+        run: sudo apt-get install -y libmagic1
+
+      - name: Install Python dependencies
+        working-directory: backend
+        run: pip install -r requirements.txt
+
+      - name: Run unit and API tests
+        working-directory: backend
+        run: pytest tests/ -v --tb=short
+
+  # ── Step 2: deploy to EC2 (only if tests pass) ────────────────────────────
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host:     ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key:      ${{ secrets.EC2_SSH_KEY }}
+          timeout:  120s
+          script: |
+            set -e
+            cd /home/ec2-user/api-backend
+
+            # Pull latest code
+            git pull origin main
+
+            # Restart FastAPI backend
+            sudo systemctl restart api
+
+            # Restart SQS worker
+            sudo systemctl restart worker
+
+            # Rebuild Vue.js frontend
+            cd frontend
+            npm install
+            npm run build
+
+            # Reload Nginx to serve new static files
+            sudo systemctl reload nginx
+
+            echo "✅ Deployment complete"
