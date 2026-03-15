@@ -50,6 +50,7 @@ jobs:
             cd /home/ec2-user/api-backend
 
             # Pull latest code
+            cd /home/ec2-user/api-backend
             git pull origin main
 
             # Restart FastAPI backend
@@ -62,6 +63,10 @@ jobs:
             cd frontend
             npm install
             npm run build
+
+            # Ensure Nginx can read the dist folder
+            chmod o+x /home/ec2-user /home/ec2-user/api-backend /home/ec2-user/api-backend/frontend /home/ec2-user/api-backend/frontend/dist
+            chmod -R o+r /home/ec2-user/api-backend/frontend/dist
 
             # Reload Nginx to serve new static files
             sudo systemctl reload nginx
