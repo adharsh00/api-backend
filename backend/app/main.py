@@ -22,6 +22,9 @@ app.include_router(appointments.router, prefix="/appointments", tags=["Appointme
 app.include_router(public_apis.router, prefix="/public", tags=["Public APIs"])
 
 
-@app.get("/health", tags=["Health"])
-def health_check():
-    return {"status": "healthy", "service": "Image Format Validation API"}
+#@app.get("/health", tags=["Health"])
+#def health_check():
+#    return {"status": "healthy", "service": "Image Format Validation API"}
+@app.get("/ping")
+async def ping():
+    return {"status": "success", "service": "Medical Image Validation", "deployed": "Cloud9→EC2"}
