@@ -97,7 +97,7 @@
 
     <!-- Info card ────────────────────────────────────────────────────────── -->
     <div class="card">
-      <h2 class="card-title">ℹ️ About Service</h2>
+      <h2 class="card-title">ℹ️ About the Service</h2>
       <p class="info-body">
         Files are stored securely in <strong>Amazon S3</strong> and processed
         asynchronously via <strong>AWS SQS</strong>. A MIME pre-check is performed
